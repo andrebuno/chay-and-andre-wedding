@@ -6,16 +6,18 @@
 <title>Chay &amp; Andre — Wedding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="./index_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f4ef;
-    --ink: #1a1a1a;
-    --muted: #6b6b6b;
-    --line: #d8d4ca;
-    --accent: #2a2a2a;
-    --paper: #ffffff;
-    --soft: #ebe7dd;
+    --bg: #F4F1EA;        /* warm cream — page background */
+    --ink: #062821;       /* near-black emerald — body text, deepest */
+    --primary: #0F4A3C;   /* deep emerald — hero, headlines, brand */
+    --sage: #8FB5A4;      /* dusty sage — soft accent, ampersands */
+    --muted: #6b7770;     /* desaturated emerald-gray — secondary text */
+    --line: #d6d2c6;      /* warm beige — borders */
+    --accent: #0F4A3C;    /* primary, used for button hover */
+    --paper: #ffffff;     /* RSVP section background */
+    --soft: #e6e1d6;      /* soft cream — map frame, info box */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,13 +28,13 @@
     background: var(--bg);
     color: var(--ink);
     font-family: 'Inter Tight', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  .serif { font-family: 'Fraunces', serif; font-weight: 300; }
+  .serif { font-family: 'DM Serif Display', serif; font-weight: 300; }
   .italic { font-style: italic; }
 
   /* ===== NAV ===== */
@@ -53,10 +55,15 @@
   nav.scrolled { border-bottom-color: var(--line); }
 
   nav .mark {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-style: italic;
-    font-size: 1.25rem;
-    letter-spacing: 0.02em;
+    font-size: 1.75rem;
+    letter-spacing: -0.08em;
+  }
+
+  nav .mark .amp {
+    font-size: 0.6em;
+    vertical-align: 0.1em;
   }
 
   nav ul {
@@ -105,7 +112,7 @@
     text-transform: uppercase;
     letter-spacing: 0.4em;
     color: var(--muted);
-    margin-bottom: 3rem;
+    margin-bottom: 0;
     opacity: 0;
     animation: fadeUp 1s ease 0.2s forwards;
   }
@@ -121,21 +128,29 @@
   }
 
   .hero h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
     font-size: clamp(4rem, 14vw, 11rem);
     line-height: 0.95;
     letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
+    margin-top: -2rem;
+    margin-bottom: 4rem;
+    color: var(--primary);
     opacity: 0;
     animation: fadeUp 1.2s ease 0.4s forwards;
   }
 
   .hero h1 .amp {
     font-style: italic;
-    font-weight: 300;
-    color: var(--muted);
-    margin: 0 0.15em;
+    font-weight: 400;
+    font-size: 2em;
+    color: var(--sage);
+    margin-left: -0.15em;
+    margin-right: -0.1em;
+    transform: translateY(0.15em);
+    display: inline-block;
+    position: relative;
+    z-index: -1;
   }
 
   .hero-date {
@@ -148,7 +163,7 @@
   }
 
   .hero-date .num {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-size: 1.5rem;
     font-style: italic;
     color: var(--muted);
@@ -216,15 +231,16 @@
   }
 
   .section-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     line-height: 1;
     letter-spacing: -0.02em;
     margin-bottom: 3rem;
+    color: var(--primary);
   }
 
-  .section-title em { font-style: italic; color: var(--muted); }
+  .section-title em { font-style: italic; color: var(--sage); }
 
   /* ===== STORY ===== */
   .story {
@@ -242,7 +258,7 @@
   }
 
   .story-text p.lead {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-style: italic;
     font-size: 1.5rem;
     line-height: 1.5;
@@ -269,7 +285,7 @@
   .tl-item:last-child { border-right: none; }
 
   .tl-time {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-style: italic;
     font-size: 1.1rem;
     color: var(--muted);
@@ -278,8 +294,9 @@
 
   .tl-event {
     font-size: 1.5rem;
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    color: var(--primary);
     margin-bottom: 0.5rem;
   }
 
@@ -299,9 +316,10 @@
   }
 
   .venue-info h3 {
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
     font-size: 2.25rem;
+    color: var(--primary);
     margin-bottom: 1rem;
     line-height: 1.1;
   }
@@ -361,7 +379,7 @@
   }
 
   .rsvp-intro p {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-style: italic;
     font-size: 1.25rem;
     color: var(--muted);
@@ -469,7 +487,7 @@
   .form-msg {
     text-align: center;
     padding: 2rem;
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-style: italic;
     font-size: 1.25rem;
   }
@@ -487,9 +505,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-size: 1.35rem;
-    font-weight: 300;
+    font-weight: 400;
+    color: var(--primary);
   }
 
   .faq-q .plus {
@@ -520,18 +539,23 @@
     border-top: 1px solid var(--line);
   }
 
-  footer .ampersand {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: 2.5rem;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-
   footer .names {
-    font-family: 'Fraunces', serif;
+    font-family: 'DM Serif Display', serif;
     font-size: 1.25rem;
     letter-spacing: 0.05em;
+  }
+
+  footer .names .amp {
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2em;
+    color: var(--sage);
+    margin-left: -0.15em;
+    margin-right: -0.1em;
+    transform: translateY(0.15em);
+    display: inline-block;
+    position: relative;
+    z-index: -1;
   }
 
   footer .tag {
@@ -562,13 +586,13 @@
 <body>
 
 <nav id="nav">
-  <div class="mark">C &amp; A</div>
+  <div class="mark">C <span class="amp">&amp;</span> A</div>
   <ul>
-    <li><a href="file:///C:/Users/Andre/Downloads/chay-and-andre-wedding_1.html#story">Our Story</a></li>
-    <li><a href="file:///C:/Users/Andre/Downloads/chay-and-andre-wedding_1.html#details">Details</a></li>
-    <li><a href="file:///C:/Users/Andre/Downloads/chay-and-andre-wedding_1.html#venue">Venue</a></li>
-    <li><a href="file:///C:/Users/Andre/Downloads/chay-and-andre-wedding_1.html#faq">FAQ</a></li>
-    <li><a href="file:///C:/Users/Andre/Downloads/chay-and-andre-wedding_1.html#rsvp">RSVP</a></li>
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#details">Details</a></li>
+    <li><a href="#venue">Venue</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#rsvp">RSVP</a></li>
   </ul>
 </nav>
 
@@ -671,7 +695,7 @@
       <a class="directions-link" id="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=Toronto+Ontario" target="_blank" rel="noopener">Get Directions</a>
     </div>
     <div class="map-frame">
-      <iframe src="./index_files/embed.html" title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="https://maps.google.com/maps?q=Toronto%20Ontario&amp;t=&amp;z=11&amp;ie=UTF8&amp;iwloc=&amp;output=embed" title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </section>
@@ -779,8 +803,7 @@
 </section>
 
 <footer>
-  <div class="ampersand">&amp;</div>
-  <div class="names">Chay &amp; Andre</div>
+  <div class="names">Chay <span class="amp">&amp;</span> Andre</div>
   <div class="tag">[Month] · [Day] · [Year]</div>
 </footer>
 

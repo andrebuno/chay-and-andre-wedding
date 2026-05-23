@@ -6,18 +6,20 @@
 <title>Chay &amp; Andre — Wedding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F4F1EA;        /* warm cream — page background */
-    --ink: #062821;       /* near-black emerald — body text, deepest */
-    --primary: #0F4A3C;   /* deep emerald — hero, headlines, brand */
-    --sage: #8FB5A4;      /* dusty sage — soft accent, ampersands */
-    --muted: #6b7770;     /* desaturated emerald-gray — secondary text */
-    --line: #d6d2c6;      /* warm beige — borders */
-    --accent: #0F4A3C;    /* primary, used for button hover */
+    --bg: #F5EFE4;        /* cream — page background */
+    --ink: #0F4A3C;       /* emerald — body text, deepest moments */
+    --primary: #0F4A3C;   /* emerald — hero, headlines, wordmark */
+    --sage: #B7CFC2;      /* sage — soft accent, ampersands, dividers */
+    --walnut: #8B6F47;    /* walnut — earth, quiet wood tones */
+    --terracotta: #C97B5C;/* terracotta — warm emphasis, sparing */
+    --muted: #8B6F47;     /* walnut — secondary text, labels */
+    --line: #dfd5c2;      /* warm beige — borders */
+    --accent: #C97B5C;    /* terracotta — warm emphasis, button hover */
     --paper: #ffffff;     /* RSVP section background */
-    --soft: #e6e1d6;      /* soft cream — map frame, info box */
+    --soft: #ebe3d3;      /* soft cream — map frame, info box */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +48,7 @@
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: rgba(246, 244, 239, 0.85);
+    background: var(--sage);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s;
@@ -95,6 +97,17 @@
 
   nav a:hover::after { width: 100%; }
 
+  nav a.cta {
+    background: var(--terracotta);
+    color: var(--bg);
+    padding: 0.65rem 1.25rem;
+    border-radius: 0;
+    transition: background 0.3s ease;
+  }
+
+  nav a.cta::after { display: none; }
+  nav a.cta:hover { background: var(--ink); }
+
   /* ===== HERO ===== */
   .hero {
     min-height: 100vh;
@@ -105,13 +118,14 @@
     padding: 8rem 2rem 4rem;
     position: relative;
     text-align: center;
+    background: var(--primary);
   }
 
   .hero-meta {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    color: var(--muted);
+    color: var(--bg);
     margin-bottom: 0;
     opacity: 0;
     animation: fadeUp 1s ease 0.2s forwards;
@@ -122,7 +136,7 @@
     display: inline-block;
     width: 40px;
     height: 1px;
-    background: var(--muted);
+    background: var(--bg);
     vertical-align: middle;
     margin: 0 1.25rem;
   }
@@ -133,9 +147,9 @@
     font-size: clamp(4rem, 14vw, 11rem);
     line-height: 0.95;
     letter-spacing: -0.03em;
-    margin-top: -2rem;
+    margin-top: 2rem;
     margin-bottom: 4rem;
-    color: var(--primary);
+    color: var(--bg);
     opacity: 0;
     animation: fadeUp 1.2s ease 0.4s forwards;
   }
@@ -143,14 +157,9 @@
   .hero h1 .amp {
     font-style: italic;
     font-weight: 400;
-    font-size: 2em;
+    font-size: 0.75em;
     color: var(--sage);
-    margin-left: -0.15em;
-    margin-right: -0.1em;
-    transform: translateY(0.15em);
-    display: inline-block;
-    position: relative;
-    z-index: -1;
+    vertical-align: 0.05em;
   }
 
   .hero-date {
@@ -164,16 +173,17 @@
 
   .hero-date .num {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
+    font-size: 3rem;
     font-style: italic;
-    color: var(--muted);
+    letter-spacing: 0.05em;
+    color: var(--bg);
   }
 
   .hero-date .label {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: var(--muted);
+    color: var(--bg);
   }
 
   .hero-date .divider {
@@ -190,7 +200,7 @@
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    color: var(--muted);
+    color: var(--bg);
     opacity: 0;
     animation: fadeUp 1s ease 1s forwards, bob 2s ease-in-out 2s infinite;
   }
@@ -240,14 +250,27 @@
     color: var(--primary);
   }
 
-  .section-title em { font-style: italic; color: var(--sage); }
+  .section-title em { font-style: italic; color: var(--terracotta); }
 
   /* ===== STORY ===== */
   .story {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6rem;
-    align-items: end;
+    align-items: stretch;
+  }
+
+  .story-side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .story-image {
+    flex: 1;
+    min-height: 200px;
+    margin-top: 1rem;
+    background: var(--soft);
+    border: 1px solid var(--line);
   }
 
   .story-text p {
@@ -266,83 +289,72 @@
     margin-bottom: 2rem;
   }
 
-  /* ===== DETAILS / TIMELINE ===== */
-  .timeline {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    padding: 3rem 0;
-  }
+  /* ===== DETAILS / THE DAY ===== */
+  #details { border-top: 1px solid var(--line); }
 
-  .tl-item {
-    text-align: center;
-    padding: 0 1rem;
-    border-right: 1px solid var(--line);
-  }
-
-  .tl-item:last-child { border-right: none; }
-
-  .tl-time {
+  .day-date {
     font-family: 'DM Serif Display', serif;
     font-style: italic;
-    font-size: 1.1rem;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-
-  .tl-event {
     font-size: 1.5rem;
-    font-family: 'DM Serif Display', serif;
-    font-weight: 400;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 4rem;
   }
 
-  .tl-note {
+  .day-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    margin-top: 4rem;
+  }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .day-image {
+    aspect-ratio: 4 / 3;
+    background: var(--soft);
+    border: 1px solid var(--line);
+  }
+
+  .day-content { text-align: left; }
+
+  .day-event {
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.4em;
     color: var(--muted);
+    margin-bottom: 0.75rem;
   }
 
-  /* ===== VENUE / MAP ===== */
-  .venue-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 4rem;
-    align-items: stretch;
+  .day-time {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
   }
 
-  .venue-info h3 {
+  .day-venue {
     font-family: 'DM Serif Display', serif;
     font-weight: 400;
-    font-size: 2.25rem;
+    font-size: 24px;
     color: var(--primary);
     margin-bottom: 1rem;
-    line-height: 1.1;
+    line-height: 1.2;
   }
 
-  .venue-info .addr {
-    font-size: 1rem;
+  .day-addr {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
     color: var(--muted);
-    margin-bottom: 2rem;
-    line-height: 1.7;
+    line-height: 1.3;
   }
-
-  .venue-info p { color: var(--ink); margin-bottom: 1rem; }
-
-  .map-frame {
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    overflow: hidden;
-    min-height: 420px;
-    background: var(--soft);
-    position: relative;
-  }
-
-  .map-frame iframe { width: 100%; height: 100%; border: 0; min-height: 420px; }
 
   .directions-link {
     display: inline-flex;
@@ -536,33 +548,29 @@
   footer {
     text-align: center;
     padding: 4rem 2rem;
-    border-top: 1px solid var(--line);
+    background: var(--primary);
   }
 
   footer .names {
     font-family: 'DM Serif Display', serif;
     font-size: 1.25rem;
     letter-spacing: 0.05em;
+    color: var(--bg);
   }
 
   footer .names .amp {
     font-style: italic;
     font-weight: 400;
-    font-size: 2em;
+    font-size: 0.75em;
     color: var(--sage);
-    margin-left: -0.15em;
-    margin-right: -0.1em;
-    transform: translateY(0.15em);
-    display: inline-block;
-    position: relative;
-    z-index: -1;
+    vertical-align: 0.05em;
   }
 
   footer .tag {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    color: var(--muted);
+    color: var(--bg);
     margin-top: 0.75rem;
   }
 
@@ -572,14 +580,9 @@
     nav ul { display: none; }
     section { padding: 5rem 1.5rem; }
     .story { grid-template-columns: 1fr; gap: 2rem; }
-    .timeline { grid-template-columns: 1fr 1fr; }
-    .tl-item:nth-child(2) { border-right: none; }
-    .tl-item { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; }
-    .tl-item:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
-    .venue-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .day-row { grid-template-columns: 1fr; gap: 2rem; }
+    .day-row .day-image { order: -1; }
     .rsvp-wrap { padding: 5rem 1.5rem; }
-    .hero-date { flex-direction: column; gap: 1rem; }
-    .hero-date .divider { width: 30px; height: 1px; }
   }
 </style>
 </head>
@@ -589,32 +592,18 @@
   <div class="mark">C <span class="amp">&amp;</span> A</div>
   <ul>
     <li><a href="#story">Our Story</a></li>
-    <li><a href="#details">Details</a></li>
-    <li><a href="#venue">Venue</a></li>
+    <li><a href="#details">The Day</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="#rsvp">RSVP</a></li>
+    <li><a href="#rsvp" class="cta">RSVP</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <header class="hero">
-  <div class="hero-meta">Together with their families</div>
+  <div class="hero-meta">Save the date</div>
   <h1>Chay <span class="amp">&amp;</span> Andre</h1>
   <div class="hero-date">
-    <div>
-      <div class="num">[Month]</div>
-      <div class="label">Month</div>
-    </div>
-    <div class="divider"></div>
-    <div>
-      <div class="num">[Day]</div>
-      <div class="label">Day</div>
-    </div>
-    <div class="divider"></div>
-    <div>
-      <div class="num">[Year]</div>
-      <div class="label">Year</div>
-    </div>
+    <div class="num">11.19.2026</div>
   </div>
   <div class="scroll-cue">Scroll ↓</div>
 </header>
@@ -623,8 +612,9 @@
 <section id="story">
   <div class="section-label">01 — Our Story</div>
   <div class="story">
-    <div>
+    <div class="story-side">
       <h2 class="section-title">A simple <em>yes</em>.</h2>
+      <div class="story-image"></div>
     </div>
     <div class="story-text">
       <p class="lead">[Add a short, sweet line about the two of you here — how you met, a favorite memory, or what this day means.]</p>
@@ -634,81 +624,52 @@
   </div>
 </section>
 
-<!-- DETAILS -->
+<!-- THE DAY -->
 <section id="details">
   <div class="section-label">02 — The Day</div>
   <h2 class="section-title">An evening <em>to remember</em>.</h2>
 
-  <div class="timeline">
-    <div class="tl-item">
-      <div class="tl-time">[Time]</div>
-      <div class="tl-event">Ceremony</div>
-      <div class="tl-note">Arrival 30 min prior</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-time">[Time]</div>
-      <div class="tl-event">Cocktails</div>
-      <div class="tl-note">Drinks &amp; canapés</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-time">[Time]</div>
-      <div class="tl-event">Dinner</div>
-      <div class="tl-note">Seated reception</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-time">[Time]</div>
-      <div class="tl-event">Dancing</div>
-      <div class="tl-note">Until late</div>
-    </div>
-  </div>
-
-  <div style="margin-top: 3rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
-    <div>
-      <div class="section-label" style="margin-bottom: 0.75rem;">Dress Code</div>
-      <div style="font-family: &#39;Fraunces&#39;, serif; font-size: 1.5rem;">[Cocktail Attire]</div>
-    </div>
-    <div>
-      <div class="section-label" style="margin-bottom: 0.75rem;">Adults Only</div>
-      <div style="font-family: &#39;Fraunces&#39;, serif; font-size: 1.5rem; font-style: italic;">[Optional note]</div>
-    </div>
-    <div>
-      <div class="section-label" style="margin-bottom: 0.75rem;">Parking</div>
-      <div style="font-family: &#39;Fraunces&#39;, serif; font-size: 1.5rem; font-style: italic;">[Available on-site]</div>
-    </div>
-  </div>
-</section>
-
-<!-- VENUE -->
-<section id="venue">
-  <div class="section-label">03 — The Venue</div>
-  <h2 class="section-title">Where it <em>happens</em>.</h2>
-
-  <div class="venue-grid">
-    <div class="venue-info">
-      <h3>[Venue Name]</h3>
-      <div class="addr">
-        [Street Address]<br>
-        [City, Province/State]<br>
-        [Postal Code, Country]
+  <div class="day-rows">
+    <div class="day-row">
+      <div class="day-image"></div>
+      <div class="day-content">
+        <div class="day-event">Ceremony</div>
+        <div class="day-time">1:00PM – 2:00PM</div>
+        <h3 class="day-venue">St. John of the Cross Church</h3>
+        <div class="day-addr">6890 Glen Erin Dr.<br>Mississauga, ON L5N 2E1</div>
+        <a class="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=St.+John+of+the+Cross+Church%2C+6890+Glen+Erin+Dr%2C+Mississauga%2C+ON+L5N+2E1" target="_blank" rel="noopener">Map</a>
       </div>
-      <p>[A short note about the venue — its character, its history, why you chose it. This is placeholder text you can edit later.]</p>
-      <a class="directions-link" id="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=Toronto+Ontario" target="_blank" rel="noopener">Get Directions</a>
     </div>
-    <div class="map-frame">
-      <iframe src="https://maps.google.com/maps?q=Toronto%20Ontario&amp;t=&amp;z=11&amp;ie=UTF8&amp;iwloc=&amp;output=embed" title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="day-row">
+      <div class="day-content">
+        <div class="day-event">Reception</div>
+        <div class="day-time">5:00PM – 10:00PM</div>
+        <h3 class="day-venue">Madison Greenhouse</h3>
+        <div class="day-addr">160 Bayview Pkwy<br>Newmarket, ON L3Y 3W3</div>
+        <a class="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=Madison+Greenhouse%2C+160+Bayview+Pkwy%2C+Newmarket%2C+ON+L3Y+3W3" target="_blank" rel="noopener">Map</a>
+      </div>
+      <div class="day-image"></div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
 <section id="faq">
-  <div class="section-label">04 — Questions</div>
+  <div class="section-label">03 — Questions</div>
   <h2 class="section-title">Good to <em>know</em>.</h2>
 
   <div class="faq-list" id="faq-list">
     <div class="faq-item">
       <div class="faq-q">When should I RSVP by?<span class="plus">+</span></div>
       <div class="faq-a">[Insert RSVP deadline here.] We'd love to know whether you can join us by that date so we can finalize plans with our caterer.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What's the dress code?<span class="plus">+</span></div>
+      <div class="faq-a">[Cocktail attire — placeholder, update with your preferred wording.]</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Where can I park?<span class="plus">+</span></div>
+      <div class="faq-a">[Parking details for both the church and Madison Greenhouse — update with on-site availability, overflow lots, or any notes for guests.]</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Are kids welcome?<span class="plus">+</span></div>
@@ -733,7 +694,7 @@
 <section id="rsvp" class="rsvp-section" style="max-width: 100%; padding: 0;">
   <div class="rsvp-wrap">
     <div class="rsvp-intro">
-      <div class="section-label" style="justify-content: center;">05 — RSVP</div>
+      <div class="section-label" style="justify-content: center;">04 — RSVP</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 0;">Will you be <em>joining us</em>?</h2>
       <p>Your presence is the only present we need. Please respond by [RSVP deadline].</p>
       <div class="deadline">Kindly respond by [date]</div>
@@ -804,7 +765,7 @@
 
 <footer>
   <div class="names">Chay <span class="amp">&amp;</span> Andre</div>
-  <div class="tag">[Month] · [Day] · [Year]</div>
+  <div class="tag">11.19.2026</div>
 </footer>
 
 <script>

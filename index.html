@@ -99,6 +99,7 @@
   }
 
   nav a:hover::after { width: 100%; }
+  nav a.mark::after { display: none; }
 
   nav a.cta {
     background: var(--terracotta);
@@ -297,11 +298,9 @@
 
   .day-date {
     font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 4rem;
+    font-size: 22px;
+    color: var(--primary);
+    margin-bottom: 2rem;
   }
 
   .day-rows {
@@ -649,7 +648,8 @@
   /* ===== RESPONSIVE ===== */
   @media (max-width: 880px) {
     nav { padding: 1rem 1.5rem; }
-    nav ul { display: none; }
+    nav ul { gap: 0; }
+    nav ul li:not(:last-child) { display: none; }
     section { padding: 5rem 1.5rem; }
     .story { grid-template-columns: 1fr; gap: 2rem; }
     .day-row { grid-template-columns: 1fr; gap: 2rem; }
@@ -661,7 +661,7 @@
 <body>
 
 <nav id="nav">
-  <div class="mark">C <span class="amp">&amp;</span> A</div>
+  <a href="#top" class="mark">C <span class="amp">&amp;</span> A</a>
   <ul>
     <li><a href="#story">Our Story</a></li>
     <li><a href="#details">The Day</a></li>
@@ -671,7 +671,7 @@
 </nav>
 
 <!-- HERO -->
-<header class="hero">
+<header class="hero" id="top">
   <div class="hero-meta">Save the date</div>
   <h1>Chay <span class="amp">&amp;</span> Andre</h1>
   <div class="hero-date">
@@ -705,6 +705,7 @@
     <div class="day-row">
       <div class="day-image"></div>
       <div class="day-content">
+        <div class="day-date">Thursday, November 19, 2026</div>
         <div class="day-event">Ceremony</div>
         <div class="day-time">1:00PM – 2:00PM</div>
         <h3 class="day-venue">St. John of the Cross Church</h3>

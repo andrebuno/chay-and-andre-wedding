@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
   :root {
     --bg: #F5EFE4;        /* cream — page background */
@@ -24,7 +25,7 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scrollbar-gutter: stable; }
 
   body {
     background: var(--bg);
@@ -106,6 +107,7 @@
     color: var(--bg);
     padding: 0.65rem 1.25rem;
     border-radius: 0;
+    text-indent: 0.18em;
     transition: background 0.3s ease;
   }
 
@@ -132,6 +134,8 @@
     color: var(--bg);
     margin-bottom: 0;
     opacity: 0;
+  }
+  body.intro-done .hero-meta {
     animation: fadeUp 1s ease 0.2s forwards;
   }
 
@@ -155,7 +159,9 @@
     margin-bottom: 4rem;
     color: var(--bg);
     opacity: 0;
-    animation: fadeUp 1.2s ease 0.4s forwards;
+  }
+  body.intro-done .hero h1 {
+    animation: fadeUp 1.2s ease 0.8s forwards;
   }
 
   .hero h1 .amp {
@@ -167,20 +173,21 @@
   }
 
   .hero-date {
-    margin-top: 2.5rem;
+    margin-top: 0;
     display: flex;
     align-items: center;
     gap: 2rem;
     opacity: 0;
-    animation: fadeUp 1s ease 0.7s forwards;
+  }
+  body.intro-done .hero-date {
+    animation: fadeUp 1s ease 1.6s forwards;
   }
 
   .hero-date .num {
     font-family: 'DM Serif Display', serif;
     font-size: 3rem;
-    font-style: italic;
     letter-spacing: 0.05em;
-    color: var(--bg);
+    color: var(--sage);
   }
 
   .hero-date .label {
@@ -199,14 +206,18 @@
   .scroll-cue {
     position: absolute;
     bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: max-content;
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.4em;
     color: var(--bg);
     opacity: 0;
-    animation: fadeUp 1s ease 1s forwards, bob 2s ease-in-out 2s infinite;
+  }
+  body.intro-done .scroll-cue {
+    animation: fadeUp 1s ease 2.4s forwards, bob 2s ease-in-out 3.4s infinite;
   }
 
   @keyframes fadeUp {
@@ -215,8 +226,8 @@
   }
 
   @keyframes bob {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
   }
 
   /* ===== SECTIONS ===== */
@@ -261,18 +272,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6rem;
-    align-items: stretch;
-  }
-
-  .story-side {
-    display: flex;
-    flex-direction: column;
+    align-items: start;
+    margin-top: 4rem;
   }
 
   .story-image {
-    flex: 1;
-    min-height: 200px;
-    margin-top: 1rem;
+    aspect-ratio: 4 / 3;
     background: var(--soft);
     border: 1px solid var(--line);
   }
@@ -611,7 +616,7 @@
   }
 
   .faq-item.open .faq-a {
-    max-height: 200px;
+    max-height: 800px;
     padding-top: 1rem;
   }
 
@@ -656,9 +661,64 @@
     .day-row .day-image { order: -1; }
     .rsvp-wrap { padding: 5rem 1.5rem; }
   }
+
+  /* ===== SPLASH INTRO ===== */
+  body.splash-active { overflow: hidden; }
+
+  .splash-rsvp {
+    position: absolute;
+    /* left/top/font-size set in JS so they track the Lottie canvas (slice scaling). */
+    transform: translate(calc(-50% - 5px), -50%);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-indent: 0.15em;
+    color: #EBE3D3;
+    background: var(--terracotta);
+    border: 0.05em solid var(--terracotta);
+    padding: 0.55em 1.6em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease, color 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .splash.ready .splash-rsvp { opacity: 1; pointer-events: auto; cursor: pointer; }
+  .splash.ready .splash-rsvp:hover {
+    color: var(--primary);
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+  }
+
+  .splash.ready { cursor: pointer; }
+  .splash.dismissed { opacity: 0; pointer-events: none; }
+
+  .splash-lottie {
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+
 </style>
 </head>
-<body>
+<body class="splash-active">
+
+<div id="splash" class="splash">
+  <div id="splash-lottie" class="splash-lottie"></div>
+  <span id="splash-rsvp" class="splash-rsvp">RSVP</span>
+</div>
 
 <nav id="nav">
   <a href="#top" class="mark">C <span class="amp">&amp;</span> A</a>
@@ -683,15 +743,12 @@
 <!-- STORY -->
 <section id="story">
   <div class="section-label">01 — Our Story</div>
+  <h2 class="section-title">Some conversations just <em>click</em>.</h2>
   <div class="story">
-    <div class="story-side">
-      <h2 class="section-title">A simple <em>yes</em>.</h2>
-      <div class="story-image"></div>
-    </div>
+    <div class="story-image"></div>
     <div class="story-text">
-      <p class="lead">[Add a short, sweet line about the two of you here — how you met, a favorite memory, or what this day means.]</p>
-      <p>[This is placeholder text for a longer paragraph. Tell guests a little about your journey together, or leave it short and let the day speak for itself. Edit or remove as you see fit.]</p>
-      <p>[A second paragraph can go here if you'd like — perhaps something about why you chose this date, this venue, or these people to share it with.]</p>
+      <p>Ours started at a family gathering over food where small talk quickly turned into something with real spark. Our humor clicked like it was already familiar, and every conversation after that only made it feel more right.</p>
+      <p>Life with us has been a mix of laughter, spontaneous plans, and figuring things out as we go — through the easy moments and the "we're fine…we're not fine" ones. It's not always perfect, but it's always real and always something that feels like us.</p>
     </div>
   </div>
 </section>
@@ -716,7 +773,7 @@
     <div class="day-row">
       <div class="day-content">
         <div class="day-event">Reception</div>
-        <div class="day-time">5:00PM – 10:00PM</div>
+        <div class="day-time">5:00PM – 11:00PM</div>
         <h3 class="day-venue">Madison Greenhouse</h3>
         <div class="day-addr">160 Bayview Pkwy<br>Newmarket, ON L3Y 3W3</div>
         <a class="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=Madison+Greenhouse%2C+160+Bayview+Pkwy%2C+Newmarket%2C+ON+L3Y+3W3" target="_blank" rel="noopener">Map</a>
@@ -732,6 +789,31 @@
   <h2 class="section-title">Good to <em>know</em>.</h2>
 
   <div class="faq-list" id="faq-list">
+    <div class="faq-item">
+      <div class="faq-q">When is the RSVP deadline?<span class="plus">+</span></div>
+      <div class="faq-a">Please RSVP by July 31st.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What should I wear?<span class="plus">+</span></div>
+      <div class="faq-a">We're going formal — black-tie optional. Suits and dresses are preferred but at the end of the day, wear whatever is comfortable for you.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Are there any hotels within the area?<span class="plus">+</span></div>
+      <div class="faq-a">We know some of you are travelling in, so here's a list of hotels near the venue.<br><br>
+        <strong>Best Western</strong><br>
+        17565 Yonge St, Newmarket, ON L3Y 5H6<br>
+        (905) 895-2131<br><br>
+        <strong>Holiday Inn</strong><br>
+        100 Pony Dr, Newmarket, ON L3Y 7B6<br>
+        (905) 853-1030<br><br>
+        <strong>Comfort Inn</strong><br>
+        1230 Journey's End Cir, Newmarket, ON L3Y 8Z6<br>
+        (905) 895-3355<br><br>
+        <strong>Postmark Hotel</strong><br>
+        180 Main St S, Newmarket, ON L3Y 3Z2<br>
+        (289) 319-7678
+      </div>
+    </div>
     <div class="faq-item">
       <div class="faq-q">Is there a registry?<span class="plus">+</span></div>
       <div class="faq-a">No registry but a monetary gift would be greatly appreciated.</div>
@@ -805,6 +887,78 @@
 </footer>
 
 <script>
+  // Splash intro — Lottie animation, click-to-enter once RSVP button is visible.
+  // Plays once per browser session (sessionStorage flag clears when the tab closes).
+  (function() {
+    const splash = document.getElementById('splash');
+    const container = document.getElementById('splash-lottie');
+    const SESSION_KEY = 'splash-seen';
+
+    const skip = () => {
+      document.body.classList.remove('splash-active');
+      document.body.classList.add('intro-done');
+      if (splash) splash.remove();
+    };
+
+    if (!splash || !container || !window.lottie) { skip(); return; }
+    if (sessionStorage.getItem(SESSION_KEY)) { skip(); return; }
+
+    const RSVP_VISIBLE_FRAME = 231; // date "11.19.2026" fully visible at frame 231 (new export)
+    let dismissed = false;
+
+    const anim = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: false,
+      autoplay: true,
+      path: 'intro.json?v=3',
+      rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+    });
+
+    // Track the BUTTON's actual screen position so the HTML RSVP overlay sits on it
+    // regardless of viewport aspect ratio (Lottie uses slice: max-scale to cover the viewport).
+    const rsvpOverlay = document.getElementById('splash-rsvp');
+    const CANVAS_W = 1920, CANVAS_H = 1080;
+    const BUTTON_X = 936.72, BUTTON_Y = 884.67; // button center at ZOOM scale 1.05 (settled state)
+    const TEXT_SIZE_UNITS = 32; // visual size to render the RSVP text at, in lottie units
+
+    const positionOverlay = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.max(vw / CANVAS_W, vh / CANVAS_H);
+      const offsetX = (vw - CANVAS_W * scale) / 2;
+      const offsetY = (vh - CANVAS_H * scale) / 2;
+      rsvpOverlay.style.left = (offsetX + BUTTON_X * scale) + 'px';
+      rsvpOverlay.style.top = (offsetY + BUTTON_Y * scale) + 'px';
+      rsvpOverlay.style.fontSize = (TEXT_SIZE_UNITS * scale) + 'px';
+    };
+    positionOverlay();
+    window.addEventListener('resize', positionOverlay);
+
+    // (No BUTTON/RSVP layers in the new export — those are now rendered entirely by
+    // the HTML <span id="splash-rsvp"> overlay below.)
+
+    const dismiss = () => {
+      if (dismissed) return;
+      dismissed = true;
+      sessionStorage.setItem(SESSION_KEY, '1');
+      splash.classList.add('dismissed');
+      document.body.classList.remove('splash-active');
+      document.body.classList.add('intro-done');
+      setTimeout(() => splash.remove(), 700);
+    };
+
+    anim.addEventListener('enterFrame', () => {
+      if (!splash.classList.contains('ready') && anim.currentFrame >= RSVP_VISIBLE_FRAME) {
+        splash.classList.add('ready');
+      }
+    });
+
+    splash.addEventListener('click', () => {
+      if (splash.classList.contains('ready')) dismiss();
+    });
+  })();
+
   // Nav scroll state — becomes translucent once story section is in view
   const navEl = document.getElementById('nav');
   const storyEl = document.getElementById('story');

@@ -907,7 +907,7 @@
     if (!splash || !container || !window.lottie) { skip(); return; }
     if (sessionStorage.getItem(SESSION_KEY)) { skip(); return; }
 
-    const RSVP_VISIBLE_FRAME = 231; // date "11.19.2026" fully visible at frame 231 (new export)
+    const RSVP_VISIBLE_FRAME = 244; // date "11.19.2026" fully visible at frame 244
     let dismissed = false;
 
     const anim = lottie.loadAnimation({
@@ -915,7 +915,7 @@
       renderer: 'svg',
       loop: false,
       autoplay: true,
-      path: 'intro.json?v=3',
+      path: 'intro.json?v=4',
       rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
     });
 

@@ -125,7 +125,10 @@
     padding: 8rem 2rem 4rem;
     position: relative;
     text-align: center;
-    background: var(--primary);
+    background-color: var(--primary);
+    background-image: linear-gradient(rgba(15, 74, 60, 0.35), rgba(15, 74, 60, 0.45)), url('images/hero.jpg');
+    background-size: cover;
+    background-position: center;
   }
 
   .hero-meta {
@@ -279,7 +282,7 @@
 
   .story-image {
     aspect-ratio: 4 / 3;
-    background: var(--soft);
+    background: var(--soft) url('images/story.jpg') center / cover no-repeat;
     border: 1px solid var(--line);
   }
 
@@ -327,6 +330,14 @@
     aspect-ratio: 4 / 3;
     background: var(--soft);
     border: 1px solid var(--line);
+  }
+
+  .day-image-ceremony {
+    background: var(--soft) url('images/ceremony.jpg') center / cover no-repeat;
+  }
+
+  .day-image-reception {
+    background: var(--soft) url('images/reception.jpg') center / cover no-repeat;
   }
 
   .day-content { text-align: left; }
@@ -764,7 +775,7 @@
 
   <div class="day-rows">
     <div class="day-row">
-      <div class="day-image"></div>
+      <div class="day-image day-image-ceremony"></div>
       <div class="day-content">
         <div class="day-date">Thursday, November 19, 2026</div>
         <div class="day-event">Ceremony</div>
@@ -782,7 +793,7 @@
         <div class="day-addr">160 Bayview Pkwy<br>Newmarket, ON L3Y 3W3</div>
         <a class="directions-link" href="https://www.google.com/maps/search/?api=1&amp;query=Madison+Greenhouse%2C+160+Bayview+Pkwy%2C+Newmarket%2C+ON+L3Y+3W3" target="_blank" rel="noopener">Map</a>
       </div>
-      <div class="day-image"></div>
+      <div class="day-image day-image-reception"></div>
     </div>
   </div>
 </section>
@@ -871,7 +882,7 @@
       </div>
 
       <div class="field" id="guest-field">
-        <label>Guest list <span class="field-hint">(up to 5 total)</span></label>
+        <label>Guest list</label>
         <div id="guests-list"></div>
         <button type="button" id="add-guest" class="add-guest-btn"><span class="plus">+</span>Add Guest</button>
       </div>

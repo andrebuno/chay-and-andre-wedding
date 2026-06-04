@@ -675,6 +675,12 @@
     .hero h1 { display: flex; flex-direction: column; align-items: center; line-height: 1; }
     .hero h1 .name, .hero h1 .amp { display: block; }
     .hero h1 .amp { margin-top: 1rem; }
+    /* Zoom in on the hero photo and shift the focal point up so the couple's faces
+       sit above the centered headline text on portrait phones. */
+    .hero {
+      background-size: cover, auto 130%;
+      background-position: center, center 70%;
+    }
   }
 
   /* ===== SPLASH INTRO ===== */
@@ -919,6 +925,7 @@
     if (sessionStorage.getItem(SESSION_KEY)) { skip(); return; }
 
     const RSVP_VISIBLE_FRAME = 244; // date "11.19.2026" fully visible at frame 244
+    const isPortrait = window.innerHeight > window.innerWidth;
     let dismissed = false;
 
     const anim = lottie.loadAnimation({
@@ -926,15 +933,17 @@
       renderer: 'svg',
       loop: false,
       autoplay: true,
-      path: 'intro.json?v=4',
+      path: isPortrait ? 'intro-vertical.json?v=3' : 'intro.json?v=4',
       rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
     });
 
     // Track the BUTTON's actual screen position so the HTML RSVP overlay sits on it
     // regardless of viewport aspect ratio (Lottie uses slice: max-scale to cover the viewport).
     const rsvpOverlay = document.getElementById('splash-rsvp');
-    const CANVAS_W = 1920, CANVAS_H = 1080;
-    const BUTTON_X = 936.72, BUTTON_Y = 884.67; // button center at ZOOM scale 1.05 (settled state)
+    const CANVAS_W = isPortrait ? 1080 : 1920;
+    const CANVAS_H = isPortrait ? 1920 : 1080;
+    const BUTTON_X = isPortrait ? 540 : 936.72;
+    const BUTTON_Y = isPortrait ? 1420 : 884.67;
     const TEXT_SIZE_UNITS = 32; // visual size to render the RSVP text at, in lottie units
 
     const positionOverlay = () => {

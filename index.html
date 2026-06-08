@@ -235,6 +235,32 @@
   }
 
   /* ===== SECTIONS ===== */
+  /* Each direct child of a section (and of .rsvp-wrap, since RSVP nests its content)
+     fades up sequentially when the section scrolls into view. */
+  .fade-in > *,
+  .fade-in .rsvp-wrap > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-in.is-visible > *,
+  .fade-in.is-visible .rsvp-wrap > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in.is-visible > *:nth-child(1),
+  .fade-in.is-visible .rsvp-wrap > *:nth-child(1) { transition-delay: 0s; }
+  .fade-in.is-visible > *:nth-child(2),
+  .fade-in.is-visible .rsvp-wrap > *:nth-child(2) { transition-delay: 0.15s; }
+  .fade-in.is-visible > *:nth-child(3),
+  .fade-in.is-visible .rsvp-wrap > *:nth-child(3) { transition-delay: 0.3s; }
+  .fade-in.is-visible > *:nth-child(4),
+  .fade-in.is-visible .rsvp-wrap > *:nth-child(4) { transition-delay: 0.45s; }
+  .fade-in.is-visible > *:nth-child(5),
+  .fade-in.is-visible .rsvp-wrap > *:nth-child(5) { transition-delay: 0.6s; }
+
   section {
     padding: 8rem 3rem;
     max-width: 1200px;
@@ -303,7 +329,19 @@
   }
 
   /* ===== DETAILS / THE DAY ===== */
-  #details, #faq { border-top: 1px solid var(--line); }
+  #details, #gifts, #faq { border-top: 1px solid var(--line); }
+
+  .gifts-headline {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+    text-align: center;
+    max-width: 900px;
+    margin: 4rem auto 0;
+  }
 
   .day-date {
     font-family: 'DM Serif Display', serif;
@@ -627,6 +665,15 @@
     font-size: 0.95rem;
   }
 
+  .faq-a a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+
+  .faq-a a:hover { color: var(--terracotta); }
+
   .faq-item.open .faq-a {
     max-height: 800px;
     padding-top: 1rem;
@@ -746,6 +793,7 @@
   <ul>
     <li><a href="#story">Our Story</a></li>
     <li><a href="#details">The Day</a></li>
+    <li><a href="#gifts">Gifts</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#rsvp" class="cta">RSVP</a></li>
   </ul>
@@ -804,15 +852,21 @@
   </div>
 </section>
 
+<!-- GIFTS -->
+<section id="gifts">
+  <div class="section-label">03 — Gifts</div>
+  <h2 class="gifts-headline">Your presence is the most important thing to us. If you wish to give us a gift, a monetary contribution would be sincerely appreciated.</h2>
+</section>
+
 <!-- FAQ -->
 <section id="faq">
-  <div class="section-label">03 — Questions</div>
+  <div class="section-label">04 — Questions</div>
   <h2 class="section-title">Good to <em>know</em>.</h2>
 
   <div class="faq-list" id="faq-list">
     <div class="faq-item">
       <div class="faq-q">When is the RSVP deadline?<span class="plus">+</span></div>
-      <div class="faq-a">Please RSVP by July 31st.</div>
+      <div class="faq-a">Please let us know if you can make it no later than July 31st, 2026.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">What should I wear?<span class="plus">+</span></div>
@@ -821,23 +875,19 @@
     <div class="faq-item">
       <div class="faq-q">Are there any hotels within the area?<span class="plus">+</span></div>
       <div class="faq-a">We know some of you are travelling in, so here's a list of hotels near the venue.<br><br>
-        <strong>Best Western</strong><br>
+        <strong><a href="https://www.google.com/maps/search/?api=1&amp;query=Best+Western+17565+Yonge+St+Newmarket+ON+L3Y+5H6" target="_blank" rel="noopener">Best Western</a></strong><br>
         17565 Yonge St, Newmarket, ON L3Y 5H6<br>
         (905) 895-2131<br><br>
-        <strong>Holiday Inn</strong><br>
+        <strong><a href="https://www.google.com/maps/search/?api=1&amp;query=Holiday+Inn+100+Pony+Dr+Newmarket+ON+L3Y+7B6" target="_blank" rel="noopener">Holiday Inn</a></strong><br>
         100 Pony Dr, Newmarket, ON L3Y 7B6<br>
         (905) 853-1030<br><br>
-        <strong>Comfort Inn</strong><br>
+        <strong><a href="https://www.google.com/maps/search/?api=1&amp;query=Comfort+Inn+1230+Journey%27s+End+Cir+Newmarket+ON+L3Y+8Z6" target="_blank" rel="noopener">Comfort Inn</a></strong><br>
         1230 Journey's End Cir, Newmarket, ON L3Y 8Z6<br>
         (905) 895-3355<br><br>
-        <strong>Postmark Hotel</strong><br>
+        <strong><a href="https://www.google.com/maps/search/?api=1&amp;query=Postmark+Hotel+180+Main+St+S+Newmarket+ON+L3Y+3Z2" target="_blank" rel="noopener">Postmark Hotel</a></strong><br>
         180 Main St S, Newmarket, ON L3Y 3Z2<br>
         (289) 319-7678
       </div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Is there a registry?<span class="plus">+</span></div>
-      <div class="faq-a">No registry but a monetary gift would be greatly appreciated.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">What if I have dietary restrictions?<span class="plus">+</span></div>
@@ -858,7 +908,7 @@
 <section id="rsvp" class="rsvp-section" style="max-width: 100%; padding: 0;">
   <div class="rsvp-wrap">
     <div class="rsvp-intro">
-      <div class="section-label" style="justify-content: center;">04 — RSVP</div>
+      <div class="section-label" style="justify-content: center;">05 — RSVP</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 0; white-space: nowrap;">Join us in <em>celebration</em>.</h2>
     </div>
 
@@ -982,6 +1032,20 @@
       if (splash.classList.contains('ready')) dismiss();
     });
   })();
+
+  // Fade each section in as it scrolls into view (only fires once per section)
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+  document.querySelectorAll('section').forEach(s => {
+    s.classList.add('fade-in');
+    fadeObserver.observe(s);
+  });
 
   // Nav scroll state — becomes translucent once story section is in view
   const navEl = document.getElementById('nav');

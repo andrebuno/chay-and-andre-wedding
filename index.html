@@ -456,6 +456,14 @@
     margin: 1.5rem auto 0;
   }
 
+  .rsvp-note {
+    font-style: normal !important;
+    max-width: none !important;
+  }
+  @media (min-width: 881px) {
+    .rsvp-note { white-space: nowrap; }
+  }
+
   .deadline {
     margin-top: 1.5rem;
     font-size: 0.7rem;
@@ -891,7 +899,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">What if I have dietary restrictions?<span class="plus">+</span></div>
-      <div class="faq-a">Too bad. Bring your gout pills and insulin pens and let's get this party going!</div>
+      <div class="faq-a">Too bad. Bring your gout pills and insulin pens and let's get this party going! But in all seriousness, please note any dietary restrictions in your RSVP and we will do our best to accommodate you.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Is there parking?<span class="plus">+</span></div>
@@ -910,6 +918,7 @@
     <div class="rsvp-intro">
       <div class="section-label" style="justify-content: center;">05 — RSVP</div>
       <h2 class="section-title" style="text-align: center; margin-bottom: 0; white-space: nowrap;">Join us in <em>celebration</em>.</h2>
+      <p class="rsvp-note">Please only add guests approved by the bride and groom.</p>
     </div>
 
     <form id="rsvp-form">
@@ -941,6 +950,11 @@
         <label>Guest list</label>
         <div id="guests-list"></div>
         <button type="button" id="add-guest" class="add-guest-btn"><span class="plus">+</span>Add Guest</button>
+      </div>
+
+      <div class="field">
+        <label for="comments">Comments <span class="field-hint">(dietary restrictions, song requests, anything else)</span></label>
+        <textarea id="comments" rows="3"></textarea>
       </div>
 
       <button type="submit" class="submit-btn" id="submit-btn">Send</button>
@@ -1143,6 +1157,7 @@
       attending,
       guests: attending === 'yes' ? guestNames.length + 1 : 0,
       guestNames,
+      comments: document.getElementById('comments').value.trim(),
       submittedAt: new Date().toISOString()
     };
 

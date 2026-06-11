@@ -50,15 +50,9 @@
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: var(--sage);
+    background: rgba(183, 207, 194, 0.8);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.4s ease, background 0.4s ease;
-  }
-
-  nav.scrolled {
-    border-bottom-color: var(--line);
-    background: rgba(183, 207, 194, 0.8);
   }
 
   nav .mark {
@@ -511,7 +505,13 @@
     cursor: not-allowed;
   }
 
-  .field textarea { resize: vertical; min-height: 80px; }
+  .field textarea {
+    resize: vertical;
+    min-height: 80px;
+    background: #FAF5EC;
+    border: 1px solid var(--line);
+    padding: 0.75rem 0.9rem;
+  }
 
   .radio-row {
     display: flex;
@@ -715,6 +715,25 @@
     letter-spacing: 0.4em;
     color: var(--bg);
     margin-top: 0.75rem;
+  }
+
+  .back-to-top {
+    display: inline-block;
+    margin-top: 2.5rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--bg);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: border-color 0.3s, opacity 0.3s;
+    opacity: 0.7;
+  }
+
+  .back-to-top:hover {
+    border-bottom-color: var(--bg);
+    opacity: 1;
   }
 
   /* ===== RESPONSIVE ===== */
@@ -957,7 +976,7 @@
         <textarea id="comments" rows="3"></textarea>
       </div>
 
-      <button type="submit" class="submit-btn" id="submit-btn">Send</button>
+      <button type="submit" class="submit-btn" id="submit-btn">Confirm</button>
     </form>
 
     <div id="form-success" class="form-msg" style="display: none;">
@@ -969,6 +988,7 @@
 <footer>
   <div class="names">Chay <span class="amp">&amp;</span> Andre</div>
   <div class="tag">11.19.2026</div>
+  <a href="#top" class="back-to-top">Back to top ↑</a>
 </footer>
 
 <script>
@@ -1060,17 +1080,6 @@
     s.classList.add('fade-in');
     fadeObserver.observe(s);
   });
-
-  // Nav scroll state — becomes translucent once story section is in view
-  const navEl = document.getElementById('nav');
-  const storyEl = document.getElementById('story');
-  const updateNav = () => {
-    const threshold = storyEl.offsetTop - navEl.offsetHeight;
-    navEl.classList.toggle('scrolled', window.scrollY >= threshold);
-  };
-  window.addEventListener('scroll', updateNav);
-  window.addEventListener('resize', updateNav);
-  updateNav();
 
   // FAQ accordion
   document.querySelectorAll('.faq-item').forEach(item => {
@@ -1175,7 +1184,7 @@
     } catch (err) {
       console.error(err);
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send';
+      submitBtn.textContent = 'Confirm';
       alert('Sorry — there was a problem saving your RSVP. Please try again.');
     }
   });

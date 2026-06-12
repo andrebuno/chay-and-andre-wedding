@@ -35,8 +35,7 @@
   .mode-switcher {
     position: fixed;
     top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 2.5rem;
     z-index: 1000;
     display: flex;
     gap: 0.5rem;
@@ -78,12 +77,15 @@
 
   /* ============ UPLOAD VIEW (guest mobile) ============ */
   #upload-view {
-    padding: 6.5rem 1.5rem 5rem;
+    padding: 5rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   #upload-view > * {
+    width: 100%;
     max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   .upload-hero {
@@ -169,7 +171,25 @@
     color: var(--muted);
     letter-spacing: 0.05em;
   }
-  #file-input { display: none; }
+  #file-input, #camera-input { display: none; }
+
+  .upload-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .upload-tile {
+    aspect-ratio: 1 / 1;
+    margin-bottom: 0;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload-tile .icon { font-size: 2.5rem; margin-bottom: 0.6rem; }
+  .upload-tile .label { font-size: 1.1rem; }
 
   .name-field {
     margin-bottom: 1.5rem;
@@ -331,6 +351,9 @@
     color: var(--bg);
   }
 
+  #slideshow-view {
+    overflow: hidden;
+  }
   #slideshow-view .slideshow-stage {
     position: absolute;
     top: 6rem;
@@ -346,16 +369,17 @@
   .slide-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 28vw;
-    align-items: center;
+    grid-template-rows: 100%;
+    align-items: stretch;
     gap: 6rem;
     width: 100%;
     height: 100%;
+    min-height: 0;
   }
 
   .slide-frame-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    height: 100%;
     transition: opacity 0.6s;
   }
   .slide-frame-area.fading { opacity: 0; }
@@ -367,15 +391,16 @@
 
   .slide-frame {
     position: relative;
-    max-height: calc(100vh - 12rem);
+    width: 100%;
+    height: 100%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     background: var(--bg);
   }
   .slide-frame img {
     display: block;
-    max-height: calc(100vh - 12rem);
-    max-width: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .slide-info {
@@ -588,6 +613,17 @@
 
   /* ============ MOBILE RESPONSIVE ============ */
   @media (max-width: 880px) {
+    /* Center the nav pill on mobile */
+    .mode-switcher {
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* Upload: top-align with enough padding to clear the nav pill */
+    #upload-view {
+      justify-content: flex-start;
+      padding-top: 5.5rem;
+    }
     /* Slideshow: stack image on top, info below */
     #slideshow-view .slideshow-stage {
       top: 5rem;
@@ -653,12 +689,20 @@
       <textarea id="guest-message" rows="3"></textarea>
     </div>
 
-    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
-      <div class="icon">＋</div>
-      <div class="label">Add Photos</div>
-      <div class="sub">Tap to choose · or take a new one</div>
+    <div class="upload-tiles">
+      <div class="upload-zone upload-tile" id="upload-zone" onclick="document.getElementById('file-input').click()">
+        <div class="icon">＋</div>
+        <div class="label">Choose Photos</div>
+        <div class="sub">From your gallery</div>
+      </div>
+      <div class="upload-zone upload-tile" onclick="document.getElementById('camera-input').click()">
+        <div class="icon">📷</div>
+        <div class="label">Take Photo</div>
+        <div class="sub">Open camera</div>
+      </div>
     </div>
-    <input type="file" id="file-input" accept="image/*" multiple capture="environment" />
+    <input type="file" id="file-input" accept="image/*" multiple />
+    <input type="file" id="camera-input" accept="image/*" capture="environment" />
 
     <div id="preview-area"></div>
 
@@ -768,6 +812,12 @@
   fileInput.addEventListener('change', (e) => {
     handleFiles(Array.from(e.target.files));
     fileInput.value = '';
+  });
+
+  const cameraInput = document.getElementById('camera-input');
+  cameraInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+    cameraInput.value = '';
   });
 
   ['dragenter', 'dragover'].forEach(ev => {

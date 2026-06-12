@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chay & Andre — Wedding Photos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5EFE4;
+    --sage: #B7CFC2;
+    --terracotta: #C97B5C;
+    --walnut: #8B6F47;
+    --primary: #0F4A3C;
+    --line: #DBD3C2;
+    --muted: #6B6B6B;
+    --deep: #1F1F1F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--deep);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ============ MODE SWITCHER (top corner) ============ */
+  .mode-switcher {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 0.4rem;
+    border-radius: 999px;
+    border: 0.5px solid var(--line);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .mode-switcher button {
+    background: transparent;
+    border: 0;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-switcher button.active {
+    background: var(--primary);
+    color: var(--bg);
+  }
+
+  /* ============ VIEW BASE ============ */
+  .view {
+    position: fixed;
+    inset: 0;
+    display: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable both-edges;
+  }
+  .view.active { display: block; }
+
+  /* ============ UPLOAD VIEW (guest mobile) ============ */
+  #upload-view {
+    padding: 6.5rem 1.5rem 5rem;
+  }
+  #upload-view > * {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .upload-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .upload-hero .meta {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em; /* compensates trailing letter-spacing so dashes sit symmetrically */
+    text-transform: uppercase;
+    color: var(--walnut);
+    margin-bottom: 1.25rem;
+  }
+  .upload-hero .meta::before,
+  .upload-hero .meta::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--terracotta);
+    vertical-align: middle;
+    margin: 0 0.6rem;
+  }
+  .upload-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  .upload-hero h1 .amp {
+    font-style: italic;
+    color: var(--sage);
+  }
+  .upload-hero .tag {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--walnut);
+    margin-top: 0.75rem;
+  }
+
+  .upload-prompt {
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--deep);
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  .upload-zone {
+    background: white;
+    border: 1.5px dashed var(--sage);
+    border-radius: 4px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1.5rem;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--primary);
+    background: #fafafa;
+  }
+  .upload-zone .icon {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .upload-zone .label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  .upload-zone .sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  #file-input { display: none; }
+
+  .name-field {
+    margin-bottom: 1.5rem;
+  }
+  .name-field label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--walnut);
+    margin-bottom: 0.5rem;
+  }
+  .name-field input,
+  .name-field textarea {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--line);
+    padding: 0.7rem 0.9rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--deep);
+  }
+  .name-field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .name-field input:focus,
+  .name-field textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .name-field input::placeholder,
+  .name-field textarea::placeholder {
+    color: #B5B0A8;
+    font-style: italic;
+    opacity: 1;
+  }
+
+  #preview-area {
+    margin-bottom: 1.5rem;
+  }
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .preview-item {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    background: var(--line);
+  }
+  .preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .preview-item .remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .send-btn {
+    width: 100%;
+    background: var(--primary);
+    color: var(--bg);
+    border: 0;
+    padding: 1.1rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .send-btn:hover:not(:disabled) { background: var(--terracotta); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--primary);
+    color: var(--bg);
+    padding: 0.9rem 1.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+    z-index: 2000;
+    max-width: 90%;
+    text-align: center;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .success-screen {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  .success-screen .heart {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 4rem;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+  .success-screen p {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--walnut);
+    margin-bottom: 2rem;
+  }
+  .success-screen button {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 0.9rem 2rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* ============ SLIDESHOW VIEW (TV/projector) ============ */
+  #slideshow-view {
+    background: var(--primary);
+    color: var(--bg);
+  }
+
+  #slideshow-view .slideshow-stage {
+    position: absolute;
+    top: 6rem;
+    left: 0;
+    right: 0;
+    bottom: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6rem 0 3rem;
+  }
+
+  .slide-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 28vw;
+    align-items: center;
+    gap: 6rem;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slide-frame-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s;
+  }
+  .slide-frame-area.fading { opacity: 0; }
+
+  .slide-credit {
+    transition: opacity 0.6s;
+  }
+  .slide-credit.fading { opacity: 0; }
+
+  .slide-frame {
+    position: relative;
+    max-height: calc(100vh - 12rem);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    background: var(--bg);
+  }
+  .slide-frame img {
+    display: block;
+    max-height: calc(100vh - 12rem);
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .slide-info {
+    font-family: 'DM Serif Display', serif;
+    color: var(--sage);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+    height: 100%;
+    padding: 2rem 0;
+  }
+
+  .slide-info .info-header .meta {
+    font-size: clamp(0.7rem, 0.85vw, 1.1rem);
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1rem;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .slide-info .info-header .meta::before,
+  .slide-info .info-header .meta::after {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--sage);
+    vertical-align: middle;
+    margin: 0 0.5rem;
+  }
+  .slide-info .info-header h2 {
+    font-weight: 400;
+    font-size: clamp(3rem, 5.5vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--bg);
+    white-space: nowrap;
+  }
+  .slide-info .info-header h2 em {
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  .slide-info .slide-credit .by {
+    font-style: normal;
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+    color: var(--terracotta);
+  }
+  .slide-info .slide-credit .msg {
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--bg);
+    margin-top: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .slide-info .info-qr {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .slide-info .info-qr .qr-box {
+    width: 240px;
+    height: 240px;
+    background: var(--bg);
+    padding: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slide-info .info-qr .qr-box img { width: 100%; height: 100%; }
+  .slide-info .info-qr .qr-desc {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: var(--sage);
+    margin-top: 1.5rem;
+    max-width: 18vw;
+    line-height: 1.4;
+  }
+
+
+  #slideshow-view .slideshow-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+  .slideshow-footer .count {
+    color: var(--terracotta);
+    margin-left: 0.5rem;
+  }
+
+  .empty-slideshow {
+    text-align: center;
+    color: var(--sage);
+  }
+  .empty-slideshow .amp {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 6rem;
+    color: var(--sage);
+    line-height: 1;
+    margin-bottom: 2rem;
+  }
+  .empty-slideshow .msg {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--sage);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.4;
+  }
+
+  /* ============ QR CODE PAGE (for printing) ============ */
+  #qr-view {
+    padding: 5.5rem 1.5rem 3rem;
+  }
+  #qr-view.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-card {
+    background: white;
+    max-width: 380px;
+    width: 100%;
+    padding: 3rem 2.5rem;
+    border: 0.5px solid var(--line);
+    text-align: center;
+  }
+  .qr-card .meta {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    text-transform: uppercase;
+    color: var(--walnut);
+    margin-bottom: 1rem;
+  }
+  .qr-card .meta::before, .qr-card .meta::after {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--terracotta);
+    vertical-align: middle;
+    margin: 0 0.5rem;
+  }
+  .qr-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+  }
+  .qr-card h2 em {
+    font-style: italic;
+    color: var(--sage);
+  }
+  .qr-card .tag {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--walnut);
+    margin-bottom: 2rem;
+  }
+  .qr-card .qr-box {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 2rem;
+    background: var(--bg);
+    border: 0.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .qr-card .qr-box img {
+    width: 100%;
+    height: 100%;
+  }
+  .qr-card .instruction {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--deep);
+    margin-bottom: 0.75rem;
+  }
+  .qr-card .url {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
+    word-break: break-all;
+  }
+
+  /* ============ MOBILE RESPONSIVE ============ */
+  @media (max-width: 880px) {
+    /* Slideshow: stack image on top, info below */
+    #slideshow-view .slideshow-stage {
+      top: 5rem;
+      bottom: 3.5rem;
+      padding: 1rem;
+    }
+    .slide-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+      height: 100%;
+    }
+    .slide-frame {
+      max-width: 90vw;
+      max-height: 100%;
+    }
+    .slide-frame img {
+      max-width: 90vw;
+      max-height: 100%;
+    }
+    .slide-info {
+      padding: 0;
+      gap: 1rem;
+      justify-content: center;
+      height: auto;
+    }
+    .slide-info .info-header { display: none; }
+    .slide-info .info-qr { display: none; }
+    .slide-info .slide-credit .by { font-size: 1rem; }
+    .slide-info .slide-credit .msg { font-size: 1.1rem; margin-top: 0.4rem; }
+    .slideshow-footer { font-size: 0.65rem !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mode switcher: lets you see all three views -->
+<div class="mode-switcher">
+  <button id="btn-upload" class="active" onclick="setView('upload')">Guest</button>
+  <button id="btn-slideshow" onclick="setView('slideshow')">Slideshow</button>
+</div>
+
+<!-- ===================== UPLOAD VIEW (mobile) ===================== -->
+<div id="upload-view" class="view active">
+  <div id="upload-form">
+    <div class="upload-hero">
+      <div class="meta">11.19.2026</div>
+      <h1>Chay <span class="amp">&amp;</span> Andre</h1>
+      <div class="tag">Help us capture the day</div>
+    </div>
+
+    <p class="upload-prompt">
+      Share the moments you catch — candid laughs, the dance floor, the little details. Your photos will appear on the live slideshow throughout the evening.
+    </p>
+
+    <div class="name-field">
+      <label for="guest-name">Your Name</label>
+      <input type="text" id="guest-name" />
+    </div>
+
+    <div class="name-field">
+      <label for="guest-message">Message (optional)</label>
+      <textarea id="guest-message" rows="3"></textarea>
+    </div>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <div class="icon">＋</div>
+      <div class="label">Add Photos</div>
+      <div class="sub">Tap to choose · or take a new one</div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" multiple capture="environment" />
+
+    <div id="preview-area"></div>
+
+    <button class="send-btn" id="send-btn" disabled>Share</button>
+  </div>
+
+  <div id="upload-success" style="display: none;" class="success-screen">
+    <div class="heart">&amp;</div>
+    <h2>Thank you</h2>
+    <p>Your moment is now part of the day.</p>
+    <button onclick="resetUploader()">Share More</button>
+  </div>
+</div>
+
+<!-- ===================== SLIDESHOW VIEW ===================== -->
+<div id="slideshow-view" class="view">
+  <div class="slideshow-stage">
+    <div class="slide-row">
+      <div class="slide-frame-area" id="slide-frame-area">
+        <div class="empty-slideshow">
+          <div class="amp">&amp;</div>
+          <div class="msg">No photos yet — be the first to capture a moment from the day.</div>
+        </div>
+      </div>
+      <div class="slide-info">
+        <div class="info-header">
+          <div class="meta">11.19.2026</div>
+          <h2>Chay <em>&amp;</em> Andre</h2>
+        </div>
+
+        <div class="slide-credit" id="slide-credit">
+          <div class="by">A Guest</div>
+          <div class="msg">"A short message from a guest will appear here."</div>
+        </div>
+
+        <div class="info-qr">
+          <div class="qr-box"><img id="qr-image" alt="QR code" /></div>
+          <div class="qr-desc">Scan with your phone camera to share photos to the live slideshow.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  // ============ FIREBASE SETUP ============
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytes, getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDkOmoIuUaz2b547qFnf7kiDUHD4v45kbc",
+    authDomain: "chay-and-andre-wedding.firebaseapp.com",
+    projectId: "chay-and-andre-wedding",
+    storageBucket: "chay-and-andre-wedding.firebasestorage.app",
+    messagingSenderId: "1040490881555",
+    appId: "1:1040490881555:web:d86c446005c204155b95e6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // ============ MODE SWITCHING ============
+  window.setView = function(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.mode-switcher button').forEach(b => b.classList.remove('active'));
+    document.getElementById(view + '-view').classList.add('active');
+    document.getElementById('btn-' + view).classList.add('active');
+
+    if (view === 'slideshow') startSlideshow();
+    else stopSlideshow();
+  };
+
+  // Generate the QR pointing to the upload view's URL once at page load
+  (function renderQR() {
+    const url = window.location.href.split('#')[0];
+    const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&color=0F4A3C&bgcolor=F5EFE4&margin=10`;
+    const img = document.getElementById('qr-image');
+    if (img) img.src = qrSrc;
+  })();
+
+  // ============ TOAST ============
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // ============ UPLOAD LOGIC ============
+  const fileInput = document.getElementById('file-input');
+  const previewArea = document.getElementById('preview-area');
+  const sendBtn = document.getElementById('send-btn');
+  const uploadZone = document.getElementById('upload-zone');
+
+  let pendingFiles = [];
+
+  fileInput.addEventListener('change', (e) => {
+    handleFiles(Array.from(e.target.files));
+    fileInput.value = '';
+  });
+
+  ['dragenter', 'dragover'].forEach(ev => {
+    uploadZone.addEventListener(ev, (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    uploadZone.addEventListener(ev, (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+    });
+  });
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    handleFiles(files);
+  });
+
+  function handleFiles(files) {
+    files.forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      compressImage(file).then(({ blob, dataUrl }) => {
+        pendingFiles.push({ blob, dataUrl, name: file.name });
+        renderPreviews();
+        updateSendBtn();
+      });
+    });
+  }
+
+  function compressImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1600;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            const ratio = Math.min(maxDim / width, maxDim / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          canvas.toBlob((blob) => {
+            resolve({ blob, dataUrl });
+          }, 'image/jpeg', 0.85);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPreviews() {
+    if (pendingFiles.length === 0) {
+      previewArea.innerHTML = '';
+      return;
+    }
+    previewArea.innerHTML = '<div class="preview-grid">' +
+      pendingFiles.map((f, i) =>
+        `<div class="preview-item">
+          <img src="${f.dataUrl}" alt="preview" />
+          <button class="remove" data-idx="${i}" aria-label="Remove">×</button>
+        </div>`
+      ).join('') + '</div>';
+    // Attach remove handlers
+    previewArea.querySelectorAll('.remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-idx'));
+        pendingFiles.splice(idx, 1);
+        renderPreviews();
+        updateSendBtn();
+      });
+    });
+  }
+
+  function updateSendBtn() {
+    sendBtn.disabled = pendingFiles.length === 0;
+    sendBtn.textContent = 'Share';
+  }
+
+  sendBtn.addEventListener('click', async () => {
+    if (pendingFiles.length === 0) return;
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sharing...';
+    const guestName = document.getElementById('guest-name').value.trim() || 'A guest';
+    const guestMessage = document.getElementById('guest-message').value.trim();
+
+    try {
+      for (const f of pendingFiles) {
+        const photoId = 'photo_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+        // Upload the image file to Firebase Storage
+        const storageRef = ref(storage, `photos/${photoId}.jpg`);
+        await uploadBytes(storageRef, f.blob, { contentType: 'image/jpeg' });
+        const url = await getDownloadURL(storageRef);
+
+        // Save metadata to Firestore
+        await addDoc(collection(db, 'photos'), {
+          url,
+          guest: guestName,
+          message: guestMessage,
+          createdAt: serverTimestamp()
+        });
+      }
+      pendingFiles = [];
+      renderPreviews();
+      updateSendBtn();
+      document.getElementById('upload-form').style.display = 'none';
+      document.getElementById('upload-success').style.display = 'block';
+    } catch (err) {
+      console.error('Upload error:', err);
+      toast('Something went wrong — please try again.');
+      sendBtn.disabled = false;
+      updateSendBtn();
+    }
+  });
+
+  window.resetUploader = function() {
+    document.getElementById('upload-form').style.display = 'block';
+    document.getElementById('upload-success').style.display = 'none';
+  };
+
+  // ============ SLIDESHOW LOGIC ============
+  let slideshowInterval = null;
+  let unsubscribe = null;
+  let allPhotos = [];
+  let currentIndex = 0;
+
+  function renderCurrentSlide() {
+    const frameArea = document.getElementById('slide-frame-area');
+    const credit = document.getElementById('slide-credit');
+
+    if (allPhotos.length === 0) {
+      frameArea.innerHTML = `
+        <div class="empty-slideshow">
+          <div class="amp">&amp;</div>
+          <div class="msg">No photos yet — be the first to capture a moment from the day.</div>
+        </div>`;
+      credit.innerHTML = `
+        <div class="by">A Guest</div>
+        <div class="msg">"A short message from a guest will appear here."</div>`;
+      return;
+    }
+
+    if (currentIndex < 0 || currentIndex >= allPhotos.length) currentIndex = 0;
+    const photo = allPhotos[currentIndex];
+
+    frameArea.innerHTML = `
+      <div class="slide-frame">
+        <img src="${photo.url}" alt="" />
+      </div>`;
+
+    credit.innerHTML = `
+      <div class="by">${escapeHtml(photo.guest)}</div>
+      ${photo.message
+        ? `<div class="msg">"${escapeHtml(photo.message)}"</div>`
+        : `<div class="msg">"A short message from a guest will appear here."</div>`}`;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function advance() {
+    if (allPhotos.length === 0) return;
+    const frameArea = document.getElementById('slide-frame-area');
+    const credit = document.getElementById('slide-credit');
+    if (frameArea) frameArea.classList.add('fading');
+    if (credit) credit.classList.add('fading');
+    setTimeout(() => {
+      currentIndex = (currentIndex + 1) % allPhotos.length;
+      renderCurrentSlide();
+      if (frameArea) frameArea.classList.remove('fading');
+      if (credit) credit.classList.remove('fading');
+    }, 600);
+  }
+
+  function startSlideshow() {
+    // Subscribe to real-time Firestore updates
+    const q = query(collection(db, 'photos'), orderBy('createdAt', 'desc'));
+    unsubscribe = onSnapshot(q, (snapshot) => {
+      const previousCount = allPhotos.length;
+      allPhotos = snapshot.docs.map(doc => doc.data());
+
+      // If new photos arrived, jump to show the newest on next advance
+      if (allPhotos.length > previousCount) {
+        currentIndex = -1;
+      }
+
+      // First render or empty state
+      if (previousCount === 0) {
+        renderCurrentSlide();
+      }
+    }, (err) => {
+      console.error('Slideshow listener error:', err);
+    });
+
+    // Advance every 12 seconds
+    if (slideshowInterval) clearInterval(slideshowInterval);
+    slideshowInterval = setInterval(advance, 12000);
+  }
+
+  function stopSlideshow() {
+    if (slideshowInterval) clearInterval(slideshowInterval);
+    if (unsubscribe) unsubscribe();
+    slideshowInterval = null;
+    unsubscribe = null;
+  }
+
+</script>
+
+</body>
+</html>

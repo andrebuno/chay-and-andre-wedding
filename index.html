@@ -860,6 +860,13 @@
       background-size: cover, auto 130%;
       background-position: center, center 70%;
     }
+    /* Per-slide mobile focal-point tweaks so the couple stays centred */
+    .hero-slide.hero-slide-2 {
+      background-position: center, 48% 70%;
+    }
+    .hero-slide.hero-slide-3 {
+      background-position: center, 60% 70%;
+    }
   }
 
   /* ===== SPLASH INTRO ===== */
@@ -934,8 +941,8 @@
 <!-- HERO -->
 <header class="hero" id="top">
   <div class="hero-slide active" style="--slide-src: url('images/hero.jpg');"></div>
-  <div class="hero-slide" style="--slide-src: url('images/hero-2.jpg');"></div>
-  <div class="hero-slide" style="--slide-src: url('images/hero-3.jpg');"></div>
+  <div class="hero-slide hero-slide-2" style="--slide-src: url('images/hero-2.jpg');"></div>
+  <div class="hero-slide hero-slide-3" style="--slide-src: url('images/hero-3.jpg');"></div>
   <div class="hero-meta">Save the date</div>
   <h1><span class="name">Chay</span> <span class="amp">&amp;</span> <span class="name">Andre</span></h1>
   <div class="hero-date">

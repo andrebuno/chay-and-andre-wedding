@@ -400,14 +400,17 @@
     border-radius: 999px;
     pointer-events: none;
     transition: opacity 0.6s ease;
+    white-space: nowrap;
+    text-align: center;
+    text-indent: 0.25em;
   }
   .gallery-hint.hidden { opacity: 0; }
   .gallery-hint .arrow {
     display: inline-block;
     margin: 0 0.5em;
-    font-size: 1.1em;
+    font-size: 1em;
     letter-spacing: 0;
-    vertical-align: -0.05em;
+    vertical-align: 0.15em;
   }
   .gallery-track {
     display: flex;
@@ -1043,7 +1046,7 @@
 
 <!-- GALLERY MARQUEE -->
 <div class="gallery-strip" aria-hidden="true">
-  <div class="gallery-hint" id="gallery-hint"><span class="arrow">←</span> Click and drag <span class="arrow">→</span></div>
+  <div class="gallery-hint" id="gallery-hint"><span class="arrow">⟵</span> Click and drag <span class="arrow">⟶</span></div>
   <div class="gallery-track">
     <img src="gallery/g01.jpg" alt="" draggable="false">
     <img src="gallery/g02.jpg" alt="" draggable="false">

@@ -120,10 +120,25 @@
     position: relative;
     text-align: center;
     background-color: var(--primary);
-    background-image: linear-gradient(rgba(15, 74, 60, 0.35), rgba(15, 74, 60, 0.45)), url('images/hero.jpg');
+    overflow: hidden;
+  }
+
+  /* Carousel layer: each slide is a full-size absolute-positioned div
+     with a background-image. Fades between them via opacity + emerald overlay. */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-color: var(--primary);
+    background-image: linear-gradient(rgba(15, 74, 60, 0.35), rgba(15, 74, 60, 0.45)), var(--slide-src);
     background-size: cover;
     background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    z-index: 0;
   }
+  .hero-slide.active { opacity: 1; }
+  .hero-meta, .hero h1, .hero-date { position: relative; z-index: 1; }
+  .scroll-cue { z-index: 1; }
 
   .hero-meta {
     font-size: 0.75rem;
@@ -335,6 +350,93 @@
     text-align: center;
     max-width: 900px;
     margin: 4rem auto 0;
+  }
+
+  /* Full-bleed parallax band between Day and Gifts.
+     Inner image is oversized so JS can translateY() it without exposing edges. */
+  .parallax-band {
+    height: 85vh;
+    position: relative;
+    overflow: hidden;
+  }
+  .parallax-image {
+    position: absolute;
+    top: -20%;
+    left: 0;
+    right: 0;
+    bottom: -20%;
+    background-image: url('images/parallax.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+  }
+  @media (max-width: 880px) {
+    .parallax-band { height: 45vh; }
+  }
+
+  /* Full-bleed gallery marquee — infinite left-scroll of engagement photos */
+  .gallery-strip {
+    overflow: hidden;
+    padding: 0;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .gallery-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    background: rgba(15, 74, 60, 0.55);
+    color: var(--bg);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .gallery-hint.hidden { opacity: 0; }
+  .gallery-hint .arrow {
+    display: inline-block;
+    margin: 0 0.5em;
+    font-size: 1.1em;
+    letter-spacing: 0;
+    vertical-align: -0.05em;
+  }
+  .gallery-track {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    cursor: grab;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: pan-y;
+  }
+  .gallery-track.dragging { cursor: grabbing; }
+  .gallery-track img {
+    height: 480px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+  @media (max-width: 880px) {
+    .gallery-strip { padding: 0; }
+    .gallery-track { gap: 0; }
+    .gallery-track img { height: 280px; }
+  }
+  @media (max-width: 480px) {
+    .gallery-track img { height: 220px; }
+    .parallax-band { height: 40vh; }
   }
 
   .day-date {
@@ -749,9 +851,9 @@
     .hero h1 { display: flex; flex-direction: column; align-items: center; line-height: 1; }
     .hero h1 .name, .hero h1 .amp { display: block; }
     .hero h1 .amp { margin-top: 1rem; }
-    /* Zoom in on the hero photo and shift the focal point up so the couple's faces
+    /* Zoom in on the hero photos and shift the focal point up so the couple's faces
        sit above the centered headline text on portrait phones. */
-    .hero {
+    .hero-slide {
       background-size: cover, auto 130%;
       background-position: center, center 70%;
     }
@@ -828,6 +930,9 @@
 
 <!-- HERO -->
 <header class="hero" id="top">
+  <div class="hero-slide active" style="--slide-src: url('images/hero.jpg');"></div>
+  <div class="hero-slide" style="--slide-src: url('images/hero-2.jpg');"></div>
+  <div class="hero-slide" style="--slide-src: url('images/hero-3.jpg');"></div>
   <div class="hero-meta">Save the date</div>
   <h1><span class="name">Chay</span> <span class="amp">&amp;</span> <span class="name">Andre</span></h1>
   <div class="hero-date">
@@ -878,6 +983,11 @@
     </div>
   </div>
 </section>
+
+<!-- PARALLAX BAND -->
+<div class="parallax-band" aria-hidden="true">
+  <div class="parallax-image"></div>
+</div>
 
 <!-- GIFTS -->
 <section id="gifts">
@@ -930,6 +1040,82 @@
     </div>
   </div>
 </section>
+
+<!-- GALLERY MARQUEE -->
+<div class="gallery-strip" aria-hidden="true">
+  <div class="gallery-hint" id="gallery-hint"><span class="arrow">←</span> Click and drag <span class="arrow">→</span></div>
+  <div class="gallery-track">
+    <img src="gallery/g01.jpg" alt="" loading="lazy">
+    <img src="gallery/g02.jpg" alt="" loading="lazy">
+    <img src="gallery/g03.jpg" alt="" loading="lazy">
+    <img src="gallery/g04.jpg" alt="" loading="lazy">
+    <img src="gallery/g05.jpg" alt="" loading="lazy">
+    <img src="gallery/g06.jpg" alt="" loading="lazy">
+    <img src="gallery/g07.jpg" alt="" loading="lazy">
+    <img src="gallery/g08.jpg" alt="" loading="lazy">
+    <img src="gallery/g09.jpg" alt="" loading="lazy">
+    <img src="gallery/g10.jpg" alt="" loading="lazy">
+    <img src="gallery/g11.jpg" alt="" loading="lazy">
+    <img src="gallery/g12.jpg" alt="" loading="lazy">
+    <img src="gallery/g13.jpg" alt="" loading="lazy">
+    <img src="gallery/g14.jpg" alt="" loading="lazy">
+    <img src="gallery/g15.jpg" alt="" loading="lazy">
+    <img src="gallery/g16.jpg" alt="" loading="lazy">
+    <img src="gallery/g17.jpg" alt="" loading="lazy">
+    <img src="gallery/g18.jpg" alt="" loading="lazy">
+    <img src="gallery/g19.jpg" alt="" loading="lazy">
+    <img src="gallery/g20.jpg" alt="" loading="lazy">
+    <img src="gallery/g21.jpg" alt="" loading="lazy">
+    <img src="gallery/g22.jpg" alt="" loading="lazy">
+    <img src="gallery/g23.jpg" alt="" loading="lazy">
+    <img src="gallery/g24.jpg" alt="" loading="lazy">
+    <img src="gallery/g25.jpg" alt="" loading="lazy">
+    <img src="gallery/g26.jpg" alt="" loading="lazy">
+    <img src="gallery/g27.jpg" alt="" loading="lazy">
+    <img src="gallery/g28.jpg" alt="" loading="lazy">
+    <img src="gallery/g29.jpg" alt="" loading="lazy">
+    <img src="gallery/g30.jpg" alt="" loading="lazy">
+    <img src="gallery/g31.jpg" alt="" loading="lazy">
+    <img src="gallery/g32.jpg" alt="" loading="lazy">
+    <img src="gallery/g33.jpg" alt="" loading="lazy">
+    <img src="gallery/g34.jpg" alt="" loading="lazy">
+    <!-- Duplicate for seamless loop -->
+    <img src="gallery/g01.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g02.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g03.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g04.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g05.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g06.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g07.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g08.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g09.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g10.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g11.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g12.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g13.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g14.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g15.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g16.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g17.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g18.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g19.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g20.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g21.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g22.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g23.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g24.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g25.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g26.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g27.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g28.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g29.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g30.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g31.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g32.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g33.jpg" alt="" loading="lazy" aria-hidden="true">
+    <img src="gallery/g34.jpg" alt="" loading="lazy" aria-hidden="true">
+  </div>
+</div>
 
 <!-- RSVP -->
 <section id="rsvp" class="rsvp-section" style="max-width: 100%; padding: 0;">
@@ -1008,7 +1194,7 @@
     if (!splash || !container || !window.lottie) { skip(); return; }
     if (sessionStorage.getItem(SESSION_KEY)) { skip(); return; }
 
-    const RSVP_VISIBLE_FRAME = 244; // date "11.19.2026" fully visible at frame 244
+    const RSVP_VISIBLE_FRAME = 199; // date "11.19.2026" fully visible at frame 199
     const isPortrait = window.innerHeight > window.innerWidth;
     let dismissed = false;
 
@@ -1017,7 +1203,7 @@
       renderer: 'svg',
       loop: false,
       autoplay: true,
-      path: isPortrait ? 'intro-vertical.json?v=3' : 'intro.json?v=4',
+      path: isPortrait ? 'intro-vertical.json?v=4' : 'intro.json?v=5',
       rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
     });
 
@@ -1080,6 +1266,116 @@
     s.classList.add('fade-in');
     fadeObserver.observe(s);
   });
+
+  // Gallery marquee — auto-scrolls slowly left; user can click/touch and drag to interact
+  (function() {
+    const track = document.querySelector('.gallery-track');
+    const strip = document.querySelector('.gallery-strip');
+    const hint = document.getElementById('gallery-hint');
+    if (!track) return;
+
+    // Hide the "Click and drag" hint on first hover / touch
+    const hideHint = () => {
+      if (hint) hint.classList.add('hidden');
+    };
+    if (strip) {
+      strip.addEventListener('pointerenter', hideHint, { once: true });
+      strip.addEventListener('pointerdown', hideHint, { once: true });
+      strip.addEventListener('touchstart', hideHint, { once: true, passive: true });
+    }
+    const SPEED = 0.75; // pixels per animation frame (~45 px/sec at 60fps)
+    let scrollX = 0;
+    let isDragging = false;
+    let pointerStartX = 0;
+    let scrollAtDragStart = 0;
+    let halfWidth = 0;
+
+    const measure = () => {
+      // The track contains images doubled for a seamless loop. Half its scrollWidth
+      // is the length of one full sequence — we wrap the offset around this length.
+      halfWidth = track.scrollWidth / 2;
+    };
+    // Measure once the images have loaded (in case natural widths differ)
+    window.addEventListener('load', measure);
+    window.addEventListener('resize', measure);
+    measure();
+
+    const wrap = () => {
+      if (!halfWidth) return;
+      if (scrollX <= -halfWidth) scrollX += halfWidth;
+      if (scrollX > 0) scrollX -= halfWidth;
+    };
+
+    const tick = () => {
+      if (!isDragging) scrollX -= SPEED;
+      wrap();
+      track.style.transform = `translate3d(${scrollX}px, 0, 0)`;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    track.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      pointerStartX = e.clientX;
+      scrollAtDragStart = scrollX;
+      track.classList.add('dragging');
+      track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      scrollX = scrollAtDragStart + (e.clientX - pointerStartX);
+    });
+    const endDrag = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('dragging');
+      if (e && e.pointerId != null) track.releasePointerCapture(e.pointerId);
+    };
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('pointerleave', endDrag);
+  })();
+
+  // Parallax band — translate the image inversely to scroll for a smooth parallax feel
+  (function() {
+    const band = document.querySelector('.parallax-band');
+    const image = band && band.querySelector('.parallax-image');
+    if (!image) return;
+    let ticking = false;
+    const update = () => {
+      const rect = band.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // -1 when band is below viewport, 0 when centered, +1 when above
+      const progress = (rect.top + rect.height / 2 - vh / 2) / (vh + rect.height / 2);
+      // Move ~12% of image height in the opposite direction of scroll
+      const offsetPct = -progress * 12;
+      image.style.transform = `translateY(${offsetPct}%)`;
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+
+  // Hero image carousel — starts on a random slide each visit, cross-fades every 15s
+  (function() {
+    const slides = document.querySelectorAll('.hero-slide');
+    if (slides.length < 2) return;
+    slides.forEach(s => s.classList.remove('active'));
+    let idx = Math.floor(Math.random() * slides.length);
+    slides[idx].classList.add('active');
+    setInterval(() => {
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('active');
+    }, 15000);
+  })();
 
   // FAQ accordion
   document.querySelectorAll('.faq-item').forEach(item => {

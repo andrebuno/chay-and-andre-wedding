@@ -1306,11 +1306,15 @@
       strip.addEventListener('pointerdown', hideHint, { once: true });
       strip.addEventListener('touchstart', hideHint, { once: true, passive: true });
     }
-    const SPEED = 0.75; // pixels per animation frame (~45 px/sec at 60fps)
+    const BASE_VELOCITY = -0.75; // pixels per frame; negative = auto-scroll left
+    const FRICTION = 0.04; // per-frame decay toward BASE_VELOCITY after a flick
     let scrollX = 0;
+    let velocity = BASE_VELOCITY;
     let isDragging = false;
     let pointerStartX = 0;
     let scrollAtDragStart = 0;
+    let lastMoveX = 0;
+    let lastMoveT = 0;
     let halfWidth = 0;
 
     const measure = () => {
@@ -1328,7 +1332,11 @@
 
     let started = false;
     const tick = () => {
-      if (!isDragging) scrollX -= SPEED;
+      if (!isDragging) {
+        scrollX += velocity;
+        // Ease velocity back toward the base auto-scroll speed after a drag
+        velocity += (BASE_VELOCITY - velocity) * FRICTION;
+      }
       wrap();
       track.style.transform = `translate3d(${scrollX}px, 0, 0)`;
       requestAnimationFrame(tick);
@@ -1358,12 +1366,23 @@
       isDragging = true;
       pointerStartX = e.clientX;
       scrollAtDragStart = scrollX;
+      lastMoveX = e.clientX;
+      lastMoveT = performance.now();
+      velocity = 0;
       track.classList.add('dragging');
       track.setPointerCapture(e.pointerId);
     });
     track.addEventListener('pointermove', (e) => {
       if (!isDragging) return;
       scrollX = scrollAtDragStart + (e.clientX - pointerStartX);
+      const now = performance.now();
+      const dt = now - lastMoveT;
+      if (dt > 0) {
+        // Convert pointer velocity (px/ms) into pixels-per-frame at 60fps for consistency
+        velocity = ((e.clientX - lastMoveX) / dt) * 16.67;
+      }
+      lastMoveX = e.clientX;
+      lastMoveT = now;
     });
     const endDrag = (e) => {
       if (!isDragging) return;

@@ -393,8 +393,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    background: var(--bg);
+    background: var(--primary);
   }
   .slide-frame img {
     display: block;
@@ -951,16 +950,28 @@
   };
 
   // ============ SLIDESHOW LOGIC ============
+  // photosById: id -> photo data from Firestore
+  // playlist:  array of ids in play order (shuffled; new arrivals inserted next-up)
+  // currentIndex: index into playlist for what's on screen
   let slideshowInterval = null;
   let unsubscribe = null;
-  let allPhotos = [];
-  let currentIndex = 0;
+  let photosById = {};
+  let playlist = [];
+  let currentIndex = -1;
+
+  function shuffleInPlace(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
   function renderCurrentSlide() {
     const frameArea = document.getElementById('slide-frame-area');
     const credit = document.getElementById('slide-credit');
 
-    if (allPhotos.length === 0) {
+    if (playlist.length === 0) {
       frameArea.innerHTML = `
         <div class="empty-slideshow">
           <div class="amp">&amp;</div>
@@ -970,8 +981,9 @@
       return;
     }
 
-    if (currentIndex < 0 || currentIndex >= allPhotos.length) currentIndex = 0;
-    const photo = allPhotos[currentIndex];
+    if (currentIndex < 0 || currentIndex >= playlist.length) currentIndex = 0;
+    const photo = photosById[playlist[currentIndex]];
+    if (!photo) return;
 
     frameArea.innerHTML = `
       <div class="slide-frame">
@@ -990,33 +1002,67 @@
   }
 
   function advance() {
-    if (allPhotos.length === 0) return;
+    if (playlist.length === 0) return;
     const frameArea = document.getElementById('slide-frame-area');
     const credit = document.getElementById('slide-credit');
     if (frameArea) frameArea.classList.add('fading');
     if (credit) credit.classList.add('fading');
     setTimeout(() => {
-      currentIndex = (currentIndex + 1) % allPhotos.length;
+      currentIndex = (currentIndex + 1) % playlist.length;
       renderCurrentSlide();
-      if (frameArea) frameArea.classList.remove('fading');
-      if (credit) credit.classList.remove('fading');
+      // Let the new content paint at opacity:0 for one frame, THEN remove the
+      // fading class — otherwise the browser batches both and skips the
+      // transition back to opacity:1 (new slide hard-cuts in).
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (frameArea) frameArea.classList.remove('fading');
+          if (credit) credit.classList.remove('fading');
+        });
+      });
     }, 600);
   }
 
   function startSlideshow() {
-    // Subscribe to real-time Firestore updates
+    // Subscribe to real-time Firestore updates — maintain a shuffled playlist
+    // and insert any newly-uploaded photos right after the currently-playing one.
     const q = query(collection(db, 'photos'), orderBy('createdAt', 'desc'));
     unsubscribe = onSnapshot(q, (snapshot) => {
-      const previousCount = allPhotos.length;
-      allPhotos = snapshot.docs.map(doc => doc.data());
+      const incoming = {};
+      snapshot.docs.forEach(doc => { incoming[doc.id] = { id: doc.id, ...doc.data() }; });
+      const prevPlaylistLen = playlist.length;
+      const currentId = currentIndex >= 0 ? playlist[currentIndex] : null;
 
-      // If new photos arrived, jump to show the newest on next advance
-      if (allPhotos.length > previousCount) {
-        currentIndex = -1;
+      // Remove deleted photos from the playlist
+      playlist = playlist.filter(id => incoming[id]);
+
+      // Collect truly new photos (in snapshot but not already in the playlist)
+      const addedIds = Object.keys(incoming).filter(id => !playlist.includes(id));
+
+      if (prevPlaylistLen === 0) {
+        // First batch — shuffle everything
+        playlist = shuffleInPlace(Object.keys(incoming));
+      } else if (addedIds.length) {
+        // Insert new arrivals right after the currently playing slide (shuffled
+        // among themselves so multiple-at-once uploads don't lock their order)
+        shuffleInPlace(addedIds);
+        const insertAt = Math.max(0, currentIndex + 1);
+        playlist.splice(insertAt, 0, ...addedIds);
+      }
+
+      photosById = incoming;
+
+      // Keep currentIndex pointing at the same photo if it still exists
+      if (currentId && incoming[currentId]) {
+        currentIndex = playlist.indexOf(currentId);
+      } else if (currentIndex >= playlist.length) {
+        currentIndex = Math.max(0, playlist.length - 1);
       }
 
       // First render or empty state
-      if (previousCount === 0) {
+      if (prevPlaylistLen === 0) {
+        currentIndex = 0;
+        renderCurrentSlide();
+      } else if (playlist.length === 0) {
         renderCurrentSlide();
       }
     }, (err) => {
